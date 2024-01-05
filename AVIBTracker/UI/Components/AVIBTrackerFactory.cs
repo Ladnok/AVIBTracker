@@ -14,9 +14,9 @@ namespace LiveSplit.UI.Components
 
         public string UpdateName => ComponentName;
 
-        public string UpdateURL => "";
+        public string UpdateURL => "https://github.com/Ladnok/AVIBTracker/main/";
 
-        public string XMLURL => UpdateURL + "";
+        public string XMLURL => UpdateURL + "AVIBTracker/Updates/update.AVIBTracker.xml";
 
         public Version Version => Version.Parse("1.0.0");
 
