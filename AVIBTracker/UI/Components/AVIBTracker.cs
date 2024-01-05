@@ -5,9 +5,6 @@ using System.Xml;
 using System.Windows.Forms;
 using LiveSplit.Model;
 using System.Diagnostics;
-using LiveSplit.ComponentUtil;
-using System.Reflection;
-using static System.Windows.Forms.AxHost;
 
 namespace LiveSplit.UI.Components
 {
@@ -19,26 +16,25 @@ namespace LiveSplit.UI.Components
         private Process GameProcess = null;
         private string GameVersion = "";
         private Dictionary<string, int[]> Offsets = new Dictionary<string, int[]>();
-        private Boolean refreshLabel = false;
+        private bool refreshLabel = false;
         #endregion
 
         #region Basic component variables
-        private List<SimpleLabel> LabelList;
-        protected InfoTextComponent InternalComponent { get; set; }
-        private LiveSplitState CurrentState { get; set; }
+        public List<SimpleLabel> LabelList { get; protected set; }
+        public LiveSplitState CurrentState { get; set; }
         private AVIBTrackerSettings Settings { get; set; }
 
         public string ComponentName => "Momodora AVIB Tracker";
 
         public float HorizontalWidth { get; set; }
-        public float MinimumHeight => 10;
-        public float VerticalHeight { get; set; }
         public float MinimumWidth => 200;
+        public float VerticalHeight { get; set; }
+        public float MinimumHeight => 10;
 
         public float PaddingTop => 1;
         public float PaddingBottom => 1;
-        public float PaddingLeft => 2;
-        public float PaddingRight => 2;
+        public float PaddingLeft => 1;
+        public float PaddingRight => 1;
 
         public IDictionary<string, Action> ContextMenuControls => null;
         #endregion
@@ -49,10 +45,10 @@ namespace LiveSplit.UI.Components
             LabelList = new List<SimpleLabel>();
             for (int i = 0; i < 4; i++)
             {
-                LabelList.Add(new SimpleLabel(i % 2 == 1 ? "Tracker" : "Value"));
+                LabelList.Add(new SimpleLabel("Ready"));
             }
-            LabelList[1].Text = "Ivory Bugs";
-            LabelList[3].Text = "Vitality Fragments";
+            LabelList[0].Text = "Ivory Bugs";
+            LabelList[2].Text = "Vitality Fragments";
 
             Settings = new AVIBTrackerSettings();
 
@@ -64,42 +60,44 @@ namespace LiveSplit.UI.Components
 
         public void PrepareDraw(LiveSplitState state, int i)
         {
-            LabelList[i + 1].Font = state.LayoutSettings.TextFont;
-            LabelList[i].Font = state.LayoutSettings.TextFont;
+            LabelList[i].Font = Settings.OverrideFont ? Settings.TextFont : CurrentState.LayoutSettings.TextFont;
+            LabelList[i + 1].Font = Settings.OverrideFont ? Settings.TextFont : CurrentState.LayoutSettings.TextFont;
 
             LabelList[i].VerticalAlignment = StringAlignment.Center;
-            LabelList[i].HorizontalAlignment = StringAlignment.Far;
             LabelList[i + 1].VerticalAlignment = StringAlignment.Center;
+            LabelList[i + 1].HorizontalAlignment = StringAlignment.Far;
         }
 
         public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion) => throw new NotImplementedException();
 
         public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
         {
-            var textHeight = g.MeasureString("A", state.LayoutSettings.TextFont).Height;
+            var textHeight = g.MeasureString("A", Settings.OverrideFont ? Settings.TextFont : CurrentState.LayoutSettings.TextFont).Height;
             VerticalHeight = textHeight * 9;
 
-            for (int i = 0; i < 18; i += 2)
+            for (int i = 0; i < 4; i += 2)
             {
-                LabelList[i].ShadowColor = Settings.OverrideTextColor ? Settings.TextShadowColor : state.LayoutSettings.ShadowsColor;
-                LabelList[i].OutlineColor = Settings.OverrideStatusColor ? Settings.TextOutlineColor : state.LayoutSettings.TextOutlineColor;
-                LabelList[i + 1].ShadowColor = Settings.OverrideStatusColor ? Settings.TextShadowColor : state.LayoutSettings.ShadowsColor;
-                LabelList[i + 1].OutlineColor = Settings.OverrideStatusColor ? Settings.TextOutlineColor : state.LayoutSettings.TextOutlineColor;
+                LabelList[i].ShadowColor = Settings.OverrideText ? Settings.TextShadowColor : CurrentState.LayoutSettings.ShadowsColor;
+                LabelList[i].OutlineColor = Settings.OverrideText ? Settings.TextOutlineColor : CurrentState.LayoutSettings.TextOutlineColor;
+                LabelList[i + 1].ShadowColor = Settings.OverrideStatus ? CurrentState.LayoutSettings.ShadowsColor : (Settings.OverrideText ? Settings.TextShadowColor : CurrentState.LayoutSettings.ShadowsColor);
+                LabelList[i + 1].ShadowColor = Settings.OverrideStatus ? CurrentState.LayoutSettings.TextOutlineColor : (Settings.OverrideText ? Settings.TextOutlineColor : CurrentState.LayoutSettings.TextOutlineColor);
 
-                LabelList[i + 1].SetActualWidth(g);
+                SetTextColor(i, Settings.inProgressColor);
+
                 LabelList[i].SetActualWidth(g);
+                LabelList[i + 1].SetActualWidth(g);
 
-                LabelList[i].Width = LabelList[i].ActualWidth;
+                LabelList[i].Width = width;
                 LabelList[i].Height = VerticalHeight;
-                LabelList[i].X = width - LabelList[i].ActualWidth;
-                LabelList[i].Y = i*textHeight*0.42f - (3.5f * textHeight);
+                LabelList[i].X = 0;
+                LabelList[i].Y = i*textHeight * 0.42f - (3.5f * textHeight);
 
-                LabelList[i + 1].Width = width;
+                LabelList[i + 1].Width = LabelList[i+1].ActualWidth;
                 LabelList[i + 1].Height = VerticalHeight;
+                LabelList[i + 1].X = width - LabelList[i+1].ActualWidth;
                 LabelList[i + 1].Y = i*textHeight * 0.42f - (3.5f * textHeight);
-                LabelList[i + 1].X = 0;
 
-                PrepareDraw(state, i);
+                PrepareDraw(CurrentState, i);
 
                 LabelList[i].Draw(g);
                 LabelList[i + 1].Draw(g);
@@ -200,8 +198,8 @@ namespace LiveSplit.UI.Components
         #region Component logic
         private void SetTextColor(int index, Color achievementColor)
         {
-            LabelList[index].ForeColor = Settings.OverrideTextColor ? (Settings.OverrideStatusColor ? achievementColor : Settings.TextInlineColor) : CurrentState.LayoutSettings.TextColor;
-            LabelList[index + 1].ForeColor = Settings.OverrideTextColor ? (Settings.OverrideStatusColor ? achievementColor : Settings.TextInlineColor) : CurrentState.LayoutSettings.TextColor;
+            LabelList[index].ForeColor = Settings.OverrideText ?  Settings.TextInlineColor : CurrentState.LayoutSettings.TextColor;
+            LabelList[index + 1].ForeColor = Settings.OverrideText ? (Settings.OverrideStatus ? achievementColor : Settings.TextInlineColor) : CurrentState.LayoutSettings.TextColor;
         }
 
         /// <summary>

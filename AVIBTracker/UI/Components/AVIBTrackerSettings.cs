@@ -11,12 +11,12 @@ namespace LiveSplit.UI.Components
         public string TextFontString => SettingsHelper.FormatFont(TextFont);
         public Font TextFont { get; set; }
 
-        public bool OverrideTextColor { get; set; }
+        public bool OverrideText { get; set; }
         public Color TextInlineColor { get; set; }
         public Color TextOutlineColor { get; set; }
         public Color TextShadowColor { get; set; }
 
-        public bool OverrideStatusColor { get; set; }
+        public bool OverrideStatus { get; set; }
         public Color inProgressColor { get; set; }
         public Color completedColor { get; set; }
 
@@ -27,21 +27,21 @@ namespace LiveSplit.UI.Components
 
             OverrideFont = false;
             TextFont = new Font("Segoe UI", 13, FontStyle.Regular, GraphicsUnit.Pixel);
-            OverrideTextColor = false;
+            OverrideText = false;
             TextInlineColor = Color.FromArgb(255, 255, 255);
             TextOutlineColor = Color.FromArgb(255, 255, 255);
             TextShadowColor = Color.FromArgb(255, 255, 255);
-            OverrideStatusColor = false;
+            OverrideStatus = false;
             inProgressColor = Color.FromArgb(255, 155, 55);
             completedColor = Color.FromArgb(10, 255, 10);
 
-            TextFontOverrideCheckbox.DataBindings.Add("Checked", this, "OverrideFont", false, DataSourceUpdateMode.OnPropertyChanged);
-            TextFontValue.DataBindings.Add("Text", this, "TextFontString", false, DataSourceUpdateMode.OnPropertyChanged);
-            TextColorOverrideCheckbox.DataBindings.Add("Checked", this, "OverrideTextColor", false, DataSourceUpdateMode.OnPropertyChanged);
-            TextInlineBtn.DataBindings.Add("BackColor", this, "TextInlineColor", false, DataSourceUpdateMode.OnPropertyChanged);
-            TextOutlineBtn.DataBindings.Add("BackColor", this, "TextOutlineColor", false, DataSourceUpdateMode.OnPropertyChanged);
-            TextShadowsBtn.DataBindings.Add("BackColor", this, "TextShadowColor", false, DataSourceUpdateMode.OnPropertyChanged);
-            StatusColorOverrideCheckbox.DataBindings.Add("Checked", this, "OverrideStatusColor", false, DataSourceUpdateMode.OnPropertyChanged);
+            FontOverrideCheckbox.DataBindings.Add("Checked", this, "OverrideFont", false, DataSourceUpdateMode.OnPropertyChanged);
+            FontValue.DataBindings.Add("Text", this, "TextFontString", false, DataSourceUpdateMode.OnPropertyChanged);
+            TextOverrideCheckbox.DataBindings.Add("Checked", this, "OverrideText", false, DataSourceUpdateMode.OnPropertyChanged);
+            InlineBtn.DataBindings.Add("BackColor", this, "TextInlineColor", false, DataSourceUpdateMode.OnPropertyChanged);
+            OutlineBtn.DataBindings.Add("BackColor", this, "TextOutlineColor", false, DataSourceUpdateMode.OnPropertyChanged);
+            ShadowsBtn.DataBindings.Add("BackColor", this, "TextShadowColor", false, DataSourceUpdateMode.OnPropertyChanged);
+            StatusOverrideCheckbox.DataBindings.Add("Checked", this, "OverrideStatus", false, DataSourceUpdateMode.OnPropertyChanged);
             ProgressColorBtn.DataBindings.Add("BackColor", this, "inProgressColor", false, DataSourceUpdateMode.OnPropertyChanged);
             CompletedColorBtn.DataBindings.Add("BackColor", this, "completedColor", false, DataSourceUpdateMode.OnPropertyChanged);
         }
@@ -60,24 +60,24 @@ namespace LiveSplit.UI.Components
             var dialog = SettingsHelper.GetFontDialog(TextFont, 7, 20);
             dialog.FontChanged += (s, ev) => TextFont = ((CustomFontDialog.FontChangedEventArgs)ev).NewFont;
             dialog.ShowDialog(this);
-            TextFontValue.Text = TextFontString;
+            FontValue.Text = TextFontString;
         }
 
         private void overrideTextFont_CheckedChanged(object sender, EventArgs e)
         {
-            FontText.Enabled = TextFontValue.Enabled = FontBtn.Enabled = TextFontOverrideCheckbox.Checked;
+            LabelFont.Enabled = FontValue.Enabled = FontBtn.Enabled = FontOverrideCheckbox.Checked;
         }
 
         private void overrideTextColor_CheckedChanged(object sender, EventArgs e)
         {
-            TextInlineText.Enabled = TextOutlineText.Enabled = TextShadowsText.Enabled = TextInlineBtn.Enabled = TextOutlineBtn.Enabled = TextShadowsBtn.Enabled = StatusColorOverrideCheckbox.Enabled = TextColorOverrideCheckbox.Checked;
+            InlineText.Enabled = OutlineText.Enabled = ShadowsText.Enabled = InlineBtn.Enabled = OutlineBtn.Enabled = ShadowsBtn.Enabled = StatusOverrideCheckbox.Enabled = TextOverrideCheckbox.Checked;
             overrideStatusColor_CheckedChanged(sender, e);
         }
 
         private void overrideStatusColor_CheckedChanged(object sender, EventArgs e)
         {
 
-            ProgressColorText.Enabled = CompletedColorText.Enabled = ProgressColorBtn.Enabled = CompletedColorBtn.Enabled = TextColorOverrideCheckbox.Checked == true ? StatusColorOverrideCheckbox.Checked : false;
+            ProgressText.Enabled = CompletedText.Enabled = ProgressColorBtn.Enabled = CompletedColorBtn.Enabled = TextOverrideCheckbox.Checked == true ? StatusOverrideCheckbox.Checked : false;
         }
 
         public void SetSettings(XmlNode settings)
@@ -101,11 +101,11 @@ namespace LiveSplit.UI.Components
                 OverrideFont = false;
             }
 
-            OverrideTextColor = SettingsHelper.ParseBool(element["OverrideTextColor"], false);
+            OverrideText = SettingsHelper.ParseBool(element["OverrideText"], false);
             TextInlineColor = SettingsHelper.ParseColor(element["TextInlineColor"], Color.FromArgb(255, 255, 255));
             TextOutlineColor = SettingsHelper.ParseColor(element["TextOutlineColor"], Color.FromArgb(255, 255, 255));
             TextShadowColor = SettingsHelper.ParseColor(element["TextShadowColor"], Color.FromArgb(255, 255, 255));
-            OverrideStatusColor = SettingsHelper.ParseBool(element["OverrideStatusColor"], false);
+            OverrideStatus = SettingsHelper.ParseBool(element["OverrideStatus"], false);
             inProgressColor = SettingsHelper.ParseColor(element["inProgressColor"], Color.FromArgb(255, 155, 55));
             completedColor = SettingsHelper.ParseColor(element["completedColor"], Color.FromArgb(10, 255, 10));
 
@@ -116,11 +116,11 @@ namespace LiveSplit.UI.Components
             var parent = document.CreateElement("Settings");
             SettingsHelper.CreateSetting(document, parent, "OverrideFont", OverrideFont);
             SettingsHelper.CreateSetting(document, parent, "TextFont", TextFont);
-            SettingsHelper.CreateSetting(document, parent, "OverrideTextColor", OverrideTextColor);
+            SettingsHelper.CreateSetting(document, parent, "OverrideText", OverrideText);
             SettingsHelper.CreateSetting(document, parent, "TextInlineColor", TextInlineColor);
             SettingsHelper.CreateSetting(document, parent, "TextOutlineColor", TextOutlineColor);
             SettingsHelper.CreateSetting(document, parent, "TextShadowColor", TextShadowColor);
-            SettingsHelper.CreateSetting(document, parent, "OverrideStatusColor", OverrideStatusColor);
+            SettingsHelper.CreateSetting(document, parent, "OverrideStatus", OverrideStatus);
             SettingsHelper.CreateSetting(document, parent, "inProgressColor", inProgressColor);
             SettingsHelper.CreateSetting(document, parent, "completedColor", completedColor);
             return parent;
