@@ -13,6 +13,7 @@ namespace LiveSplit.UI.Components
         #region Component variables
         private const string V1 = "1.05b", V2 = "1.07";
         private const string PROCESS_NAME = "MomodoraRUtM";
+        private const int LABELS_COUNT = 4;
         private Process GameProcess = null;
         private string GameVersion = "";
         private Dictionary<string, int[]> Offsets = new Dictionary<string, int[]>();
@@ -27,9 +28,9 @@ namespace LiveSplit.UI.Components
         public string ComponentName => "Momodora AVIB Tracker";
 
         public float HorizontalWidth { get; set; }
-        public float MinimumWidth => 200;
-        public float VerticalHeight { get; set; }
         public float MinimumHeight => 10;
+        public float VerticalHeight { get; set; }
+        public float MinimumWidth => 200;
 
         public float PaddingTop => 1;
         public float PaddingBottom => 1;
@@ -43,7 +44,7 @@ namespace LiveSplit.UI.Components
         public AVIBTracker(LiveSplitState state)
         {
             LabelList = new List<SimpleLabel>();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < LABELS_COUNT; i++)
             {
                 LabelList.Add(new SimpleLabel("Ready"));
             }
@@ -73,9 +74,9 @@ namespace LiveSplit.UI.Components
         public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
         {
             var textHeight = g.MeasureString("A", Settings.OverrideFont ? Settings.TextFont : CurrentState.LayoutSettings.TextFont).Height;
-            VerticalHeight = textHeight * 9;
+            VerticalHeight = textHeight * LabelList.Count / 2;
 
-            for (int i = 0; i < 4; i += 2)
+            for (int i = 0; i < LabelList.Count / 2; i += 2)
             {
                 LabelList[i].ShadowColor = Settings.OverrideText ? Settings.TextShadowColor : CurrentState.LayoutSettings.ShadowsColor;
                 LabelList[i].OutlineColor = Settings.OverrideText ? Settings.TextOutlineColor : CurrentState.LayoutSettings.TextOutlineColor;
