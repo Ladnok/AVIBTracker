@@ -1,7 +1,7 @@
 ﻿<updates>
   <update version="1.0.0">
     <files>
-      <file path="Components/AVIBTracker.dll" status="changed"/>
+      <file path="AVIBTracker/bin/Release/AVIBTracker.dll" status="changed"/>
     </files>
     <changelog>
       <change>Launch of the component</change>
