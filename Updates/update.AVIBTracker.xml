@@ -1,0 +1,10 @@
+﻿<updates>
+	<update version="1.0.1">
+		<files>
+			<file path="AVIBTracker.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Fixed counters not working</change>
+		</changelog>
+	</update>
+</updates>
