@@ -1,10 +1,18 @@
 ﻿<updates>
-  <update version="1.0.0">
-    <files>
-      <file path="AVIBTracker/bin/Release/AVIBTracker.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Launch of the component</change>
-    </changelog>
-  </update>
+	<update version="1.0.1">
+		<files>
+			<file path="AVIBTracker/bin/Release/AVIBTracker.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Fixed counters not working</change>
+		</changelog>
+	</update>
+	<update version="1.0.0">
+	<files>
+		<file path="AVIBTracker/bin/Release/AVIBTracker.dll" status="changed"/>
+	</files>
+	<changelog>
+		<change>Launch of the component</change>
+	</changelog>
+	</update>
 </updates>

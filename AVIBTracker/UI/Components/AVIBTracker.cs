@@ -5,6 +5,7 @@ using System.Xml;
 using System.Windows.Forms;
 using LiveSplit.Model;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace LiveSplit.UI.Components
 {
@@ -46,7 +47,7 @@ namespace LiveSplit.UI.Components
             LabelList = new List<SimpleLabel>();
             for (int i = 0; i < LABELS_COUNT; i++)
             {
-                LabelList.Add(new SimpleLabel("Ready"));
+                LabelList.Add(new SimpleLabel("Waiting"));
             }
             LabelList[0].Text = "Ivory Bugs";
             LabelList[2].Text = "Vitality Fragments";
@@ -115,6 +116,7 @@ namespace LiveSplit.UI.Components
         #region Component Events
         private void OnStart(object sender, EventArgs e)
         {
+            GetProcess();
             if (IsProcessRunning())
             {
                 GetGameVersion();
@@ -124,26 +126,8 @@ namespace LiveSplit.UI.Components
 
                     PrepareOffsets();
 
-                    WhatcherName = "VFCounter";
-                    ContainerWatcher<int>.List.Add(new ContainerWatcher<int>(WhatcherName, GameProcess, Offsets[WhatcherName], (old, current) =>
-                    {
-                        if(current != old)
-                        {
-                            if (current == 17)
-                            {
-                                SetTextColor(1, Settings.completedColor);
-                            }
-                            else
-                            {
-                                SetTextColor(1, Settings.inProgressColor);
-                            }
-                            LabelList[1].Text = String.Format("{0}/17", current);
-                            refreshLabel = true;
-                        }
-                    }));
-
                     WhatcherName = "IBCounter";
-                    ContainerWatcher<int>.List.Add(new ContainerWatcher<int>(WhatcherName, GameProcess, Offsets[WhatcherName], (old, current) =>
+                    ContainerWatcher<double>.List.Add(new ContainerWatcher<double>(WhatcherName, GameProcess, Offsets[WhatcherName], (old, current) =>
                     {
                         if (current != old)
                         {
@@ -155,31 +139,64 @@ namespace LiveSplit.UI.Components
                             {
                                 SetTextColor(1, Settings.inProgressColor);
                             }
-                            LabelList[3].Text = String.Format("{0}/20", current);
+                            LabelList[1].Text = String.Format("{0}/20", current);
                             refreshLabel = true;
                         }
                     }));
+                    LabelList[1].Text = String.Format("{0}/20", 0);
+
+                    WhatcherName = "VFCounter";
+                    ContainerWatcher<double>.List.Add(new ContainerWatcher<double>(WhatcherName, GameProcess, Offsets[WhatcherName], (old, current) =>
+                    {
+                        if(current != old)
+                        {
+                            if (current == 17)
+                            {
+                                SetTextColor(1, Settings.completedColor);
+                            }
+                            else
+                            {
+                                SetTextColor(1, Settings.inProgressColor);
+                            }
+                            LabelList[3].Text = String.Format("{0}/17", current);
+                            refreshLabel = true;
+                        }
+                    }));
+                    LabelList[3].Text = String.Format("{0}/17", 0);
+
+                    refreshLabel = true;
                 }
             }
         }
 
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            if (IsProcessRunning())
+            if(CurrentState.CurrentPhase == TimerPhase.Running)
             {
-                GetGameVersion();
-                if (GameVersion != "" && CurrentState.CurrentPhase == TimerPhase.Running)
+                if (IsProcessRunning())
                 {
-                    ContainerWatcher<double>.UpdateWatchers(GameProcess);
-                    if(refreshLabel && invalidator != null)
+                    GetGameVersion();
+                    if (!GameVersion.Equals(""))
                     {
-                        invalidator?.Invalidate(0, 0, width, height);
+                        ContainerWatcher<double>.UpdateWatchers(GameProcess);
+                        if (refreshLabel && invalidator != null)
+                        {
+                            invalidator?.Invalidate(0, 0, width, height);
+                            refreshLabel = false;
+                        }
                     }
                 }
+                else
+                {
+                    GetProcess();
+                }
             }
-            else
-            {
-                GetProcess();
+            else if(!LabelList[1].Text.Equals("Waiting")) {
+                LabelList[1].Text = String.Format("Waiting");
+                SetTextColor(1, Settings.inProgressColor);
+                LabelList[3].Text = String.Format("Waiting");
+                SetTextColor(3, Settings.inProgressColor);
+                invalidator?.Invalidate(0, 0, width, height);
             }
         }
 
@@ -211,12 +228,12 @@ namespace LiveSplit.UI.Components
             switch (GameVersion)
             {
                 case V1:
+                    Offsets.Add("IBCounter", new int[] { 0x230C440, 0x0, 0x4, 0x60, 0x4, 0x4, 0x3C0 });
                     Offsets.Add("VFCounter",  new int[] { 0x230C440, 0x0, 0x4, 0x60, 0x4, 0x4, 0xAE0 });
-                    Offsets.Add("IBCounter",  new int[] { 0x230C440, 0x0, 0x4, 0x60, 0x4, 0x4, 0x3C0 });
                     break;
                 case V2:
+                    Offsets.Add("IBCounter", new int[] { 0x2379600, 0x0, 0x4, 0x60, 0x4, 0x4, 0x3C0 });
                     Offsets.Add("VFCounter",  new int[] { 0x2379600, 0x0, 0x4, 0x60, 0x4, 0x4, 0xAE0 });
-                    Offsets.Add("IBCounter",  new int[] { 0x2379600, 0x0, 0x4, 0x60, 0x4, 0x4, 0x3C0 });
                     break;
                 default:
                     break;

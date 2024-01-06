@@ -5,7 +5,6 @@ namespace LiveSplit.UI.Components
 {
     class AVIBTrackerFactory : IComponentFactory
     {
-        // The displayed name of the component in the Layout Editor.
         public string ComponentName => "AVIB Tracker";
 
         public string Description => "Track Vitality Fragments and Ivory Bugs collected.";
@@ -18,7 +17,7 @@ namespace LiveSplit.UI.Components
 
         public string XMLURL => UpdateURL + "AVIBTracker/Updates/update.AVIBTracker.xml";
 
-        public Version Version => Version.Parse("1.0.0");
+        public Version Version => Version.Parse("1.0.1");
 
         public IComponent Create(LiveSplitState state)
         {
