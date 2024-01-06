@@ -54,16 +54,15 @@
     </Compile>
     <Compile Include="UI\Components\ContainerWatcher.cs" />
     <Compile Include="UI\Components\PointerUtility.cs" />
-    <Content Include="Updates\update.AVIBTracker.xml" />
+    <Content Include="Components\AVIBTracker.dll" />
+    <Content Include="Components\update.AVIBTracker.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\Components\AVIBTrackerSettings.resx">
       <DependentUpon>AVIBTrackerSettings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Release\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\LiveSplit\LiveSplit\Libs\CustomFontDialog\CustomFontDialog\CustomFontDialog.csproj">
       <Project>{d1ee5a8a-a366-4db4-b6e0-42ee09c97f1a}</Project>
