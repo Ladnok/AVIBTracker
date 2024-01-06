@@ -1,4 +1,12 @@
 ﻿<updates>
+	<update version="1.0.2">
+		<files>
+			<file path="Components/AVIBTracker.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Added automatic updates</change>
+		</changelog>
+	</update>
 	<update version="1.0.1">
 		<files>
 			<file path="Components/AVIBTracker.dll" status="changed"/>
