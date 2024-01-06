@@ -351,8 +351,6 @@ namespace LiveSplit.UI.Components
             // 
             // AVIBTrackerSettings
             // 
-            this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tableLayoutPanel5);
             this.Name = "AVIBTrackerSettings";
             this.Size = new System.Drawing.Size(456, 295);

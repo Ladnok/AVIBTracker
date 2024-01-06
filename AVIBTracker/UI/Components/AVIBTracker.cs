@@ -74,14 +74,14 @@ namespace LiveSplit.UI.Components
         public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
         {
             var textHeight = g.MeasureString("A", Settings.OverrideFont ? Settings.TextFont : CurrentState.LayoutSettings.TextFont).Height;
-            VerticalHeight = textHeight * LabelList.Count / 2;
+            VerticalHeight = textHeight * LABELS_COUNT/2;
 
-            for (int i = 0; i < LabelList.Count / 2; i += 2)
+            for (int i = 0; i < LABELS_COUNT; i += 2)
             {
                 LabelList[i].ShadowColor = Settings.OverrideText ? Settings.TextShadowColor : CurrentState.LayoutSettings.ShadowsColor;
                 LabelList[i].OutlineColor = Settings.OverrideText ? Settings.TextOutlineColor : CurrentState.LayoutSettings.TextOutlineColor;
                 LabelList[i + 1].ShadowColor = Settings.OverrideStatus ? CurrentState.LayoutSettings.ShadowsColor : (Settings.OverrideText ? Settings.TextShadowColor : CurrentState.LayoutSettings.ShadowsColor);
-                LabelList[i + 1].ShadowColor = Settings.OverrideStatus ? CurrentState.LayoutSettings.TextOutlineColor : (Settings.OverrideText ? Settings.TextOutlineColor : CurrentState.LayoutSettings.TextOutlineColor);
+                LabelList[i + 1].OutlineColor = Settings.OverrideStatus ? CurrentState.LayoutSettings.TextOutlineColor : (Settings.OverrideText ? Settings.TextOutlineColor : CurrentState.LayoutSettings.TextOutlineColor);
 
                 SetTextColor(i, Settings.inProgressColor);
 
@@ -91,12 +91,12 @@ namespace LiveSplit.UI.Components
                 LabelList[i].Width = width;
                 LabelList[i].Height = VerticalHeight;
                 LabelList[i].X = 0;
-                LabelList[i].Y = i*textHeight * 0.42f - (3.5f * textHeight);
+                LabelList[i].Y = i/2 * textHeight - textHeight/2;
 
                 LabelList[i + 1].Width = LabelList[i+1].ActualWidth;
                 LabelList[i + 1].Height = VerticalHeight;
                 LabelList[i + 1].X = width - LabelList[i+1].ActualWidth;
-                LabelList[i + 1].Y = i*textHeight * 0.42f - (3.5f * textHeight);
+                LabelList[i + 1].Y = i/2 * textHeight - textHeight/2;
 
                 PrepareDraw(CurrentState, i);
 
