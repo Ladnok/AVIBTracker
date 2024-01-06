@@ -13,7 +13,7 @@ namespace LiveSplit.UI.Components
 
         public string UpdateName => ComponentName;
 
-        public string UpdateURL => "https://github.com/Ladnok/AVIBTracker/main/";
+        public string UpdateURL => "https://github.com/Ladnok/AVIBTracker/blob/main/";
 
         public string XMLURL => UpdateURL + "AVIBTracker/Updates/update.AVIBTracker.xml";
 
