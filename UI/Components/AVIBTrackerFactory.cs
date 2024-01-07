@@ -18,7 +18,7 @@ namespace LiveSplit.UI.Components
 
         public string XMLURL => UpdateURL + "Components/update.AVIBTracker.xml";
 
-        public Version Version => Version.Parse("1.0.2");
+        public Version Version => Version.Parse("1.0.3");
 
         public IComponent Create(LiveSplitState state)
         {

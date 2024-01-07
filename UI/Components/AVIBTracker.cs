@@ -191,7 +191,7 @@ namespace LiveSplit.UI.Components
                     GetProcess();
                 }
             }
-            else if(!LabelList[1].Text.Equals("Waiting")) {
+            else if(CurrentState.CurrentPhase != TimerPhase.Ended && !LabelList[1].Text.Equals("Waiting")) {
                 LabelList[1].Text = String.Format("Waiting");
                 SetTextColor(1, Settings.inProgressColor);
                 LabelList[3].Text = String.Format("Waiting");
